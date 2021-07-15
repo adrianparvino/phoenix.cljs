@@ -1,10 +1,14 @@
 (ns phoenix.interop
   (:require ["phoenix" :as phoenix]))
 
-(defn connect [path]
-  (let [socket (phoenix/Socket. path)]
-    (.connect socket)
-    socket))
+(defn connect
+  ([path]
+   (connect path (fn [_] nil)))
+  ([path open-cb]
+   (let [socket (phoenix/Socket. path)]
+     (.onOpen socket open-cb)
+     (.connect socket)
+     socket)))
 
 (defn join
   ([^phoenix/Socket socket channel-name handlers]
