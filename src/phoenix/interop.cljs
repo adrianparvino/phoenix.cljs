@@ -19,10 +19,10 @@
    (let [^phoenix/Channel handle (.channel socket channel-name (clj->js payload))]
      (doseq [[event cb] handlers] (do (.on handle (name event) #(cb (js->clj % :keywordize-keys true)))))
      (-> handle
-         ^phoenix/Channel (.join)
-         ^phoenix/Channel (.receive "ok"      (fn [reply] (ok-cb (js->clj reply :keywordize-keys true))))
-         ^phoenix/Channel (.receive "error"   (fn [reply] (error-cb (js->clj reply :keywordize-keys true))))
-         ^phoenix/Channel (.receive "timeoutmode" (fn [reply] (timeout-cb (js->clj reply :keywordize-keys true)))))
+         ^phoenix/Push (.join)
+         ^phoenix/Push (.receive "ok"      (fn [reply] (ok-cb (js->clj reply :keywordize-keys true))))
+         ^phoenix/Push (.receive "error"   (fn [reply] (error-cb (js->clj reply :keywordize-keys true))))
+         ^phoenix/Push (.receive "timeoutmode" (fn [reply] (timeout-cb (js->clj reply :keywordize-keys true)))))
      handle)))
 
 (defn push
@@ -38,8 +38,8 @@
    (push handle event payload timeout ok-cb error-cb (fn [_] nil)))
   ([^phoenix/Channel handle event payload timeout ok-cb error-cb timeout-cb]
    (-> handle
-       ^phoenix/Channel (.push (name event) (clj->js payload) timeout)
-       ^phoenix/Channel (.receive "ok"      (fn [reply] (ok-cb (js->clj reply :keywordize-keys true))))
-       ^phoenix/Channel (.receive "error"   (fn [reply] (error-cb (js->clj reply :keywordize-keys true))))
-       ^phoenix/Channel (.receive "timeout" (fn [reply] (timeout-cb (js->clj reply :keywordize-keys true)))))
+       ^phoenix/Push (.push (name event) (clj->js payload) timeout)
+       ^phoenix/Push (.receive "ok"      (fn [reply] (ok-cb (js->clj reply :keywordize-keys true))))
+       ^phoenix/Push (.receive "error"   (fn [reply] (error-cb (js->clj reply :keywordize-keys true))))
+       ^phoenix/Push (.receive "timeout" (fn [reply] (timeout-cb (js->clj reply :keywordize-keys true)))))
    handle))
