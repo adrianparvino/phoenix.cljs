@@ -43,3 +43,18 @@
        ^phoenix/Push (.receive "error"   (fn [reply] (error-cb (js->clj reply :keywordize-keys true))))
        ^phoenix/Push (.receive "timeout" (fn [reply] (timeout-cb (js->clj reply :keywordize-keys true)))))
    handle))
+
+(defn leave
+  ([^phoenix/Channel handle timeout]
+   (push handle timeout (fn [_] nil) (fn [_] nil) (fn [_] nil)))
+  ([^phoenix/Channel handle timeout ok-cb]
+   (push handle timeout ok-cb (fn [_] nil) (fn [_] nil)))
+  ([^phoenix/Channel handle timeout ok-cb error-cb]
+   (push handle timeout ok-cb error-cb (fn [_] nil)))
+  ([^phoenix/Channel handle timeout ok-cb error-cb timeout-cb]
+   (-> handle
+       ^phoenix/Push (.leave timeout)
+       ^phoenix/Push (.receive "ok"      (fn [reply] (ok-cb (js->clj reply :keywordize-keys true))))
+       ^phoenix/Push (.receive "error"   (fn [reply] (error-cb (js->clj reply :keywordize-keys true))))
+       ^phoenix/Push (.receive "timeout" (fn [reply] (timeout-cb (js->clj reply :keywordize-keys true)))))
+   nil))
