@@ -1,4 +1,4 @@
-(defproject phoenix.cljs "0.1.0-SNAPSHOT"
+(defproject phoenix.cljs "0.2.0-SNAPSHOT"
   :description "Phoenix channels library for ClojureScript"
   :url "https://github.com/adrianparvino/phoenix.cljs"
   :license {:name "The MIT License"
