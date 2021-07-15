@@ -8,13 +8,15 @@
 
 (defn join
   ([^phoenix/Socket socket channel-name handlers]
-   (join socket channel-name handlers (fn [_] nil) (fn [_] nil) (fn [_] nil)))
-  ([^phoenix/Socket socket channel-name handlers ok-cb]
-   (join socket channel-name handlers ok-cb (fn [_] nil) (fn [_] nil)))
-  ([^phoenix/Socket socket channel-name handlers ok-cb error-cb]
-   (join socket channel-name handlers ok-cb error-cb (fn [_] nil)))
-  ([^phoenix/Socket socket channel-name handlers ok-cb error-cb timeout-cb]
-   (let [^phoenix/Channel handle (.channel socket channel-name)]
+   (join socket channel-name handlers nil (fn [_] nil) (fn [_] nil) (fn [_] nil)))
+  ([^phoenix/Socket socket channel-name handlers payload]
+   (join socket channel-name handlers nil (fn [_] nil) (fn [_] nil) (fn [_] nil)))
+  ([^phoenix/Socket socket channel-name handlers payload ok-cb]
+   (join socket channel-name handlers nil ok-cb (fn [_] nil) (fn [_] nil)))
+  ([^phoenix/Socket socket channel-name handlers payload ok-cb error-cb]
+   (join socket channel-name handlers nil ok-cb error-cb (fn [_] nil)))
+  ([^phoenix/Socket socket channel-name handlers payload ok-cb error-cb timeout-cb]
+   (let [^phoenix/Channel handle (.channel socket channel-name (clj->js payload))]
      (doseq [[event cb] handlers] (do (.on handle (name event) #(cb (js->clj % :keywordize-keys true)))))
      (-> handle
          ^phoenix/Channel (.join)
